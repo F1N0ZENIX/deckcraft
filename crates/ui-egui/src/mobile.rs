@@ -3,8 +3,13 @@ use serde_json::json;
 use crate::{SlideApp, theme};
 
 fn action(app: &mut SlideApp, id: &str) {
-    if let Err(err) = app.run(id, json!({})) {
-        app.notify(err.to_string());
+    let result = if id == "edit.delete" {
+        app.session.key("Delete", deckcraft_engine::Mods { shift: false, alt: false, cmd: false }).map(|_| serde_json::Value::Null).map_err(|err| err.to_string())
+    } else {
+        app.run(id, json!({}))
+    };
+    if let Err(err) = result {
+        app.notify(err);
     }
 }
 
