@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#101010">
   <meta name="color-scheme" content="dark">
   <meta name="description" content="DeckCraft Web+ — editor de apresentações open source no navegador.">
+  <meta name="mobile-web-app-capable" content="yes">
   <title>DeckCraft Web+</title>
   <link data-trunk rel="rust" data-bin="deckcraft-web" data-wasm-opt="z" data-weak-refs />
   <link data-trunk rel="icon" href="../../assets/app-icon/hicolor/32x32/apps/ai.storyteller.deckcraft.png" />
@@ -17,6 +18,7 @@
       font-synthesis: none;
       text-rendering: optimizeLegibility;
       -webkit-text-size-adjust: 100%;
+      -webkit-tap-highlight-color: transparent;
     }
 
     *, *::before, *::after { box-sizing: border-box; }
@@ -32,16 +34,21 @@
       overscroll-behavior: none;
     }
 
-    body { min-height: 100dvh; }
+    body { min-height: 100vh; min-height: 100dvh; }
 
     #deckcraft_canvas {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
+      position: fixed;
+      top: env(safe-area-inset-top, 0px);
+      right: env(safe-area-inset-right, 0px);
+      bottom: env(safe-area-inset-bottom, 0px);
+      left: env(safe-area-inset-left, 0px);
+      width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
+      height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
       display: block;
       outline: none;
-      touch-action: manipulation;
+      touch-action: none;
+      -webkit-user-select: none;
+      user-select: none;
     }
 
     #deckcraft_loading {
@@ -53,7 +60,7 @@
       align-items: center;
       justify-content: center;
       gap: 14px;
-      padding: 24px;
+      padding: max(24px, env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px));
       color: #f5f5f5;
       background: #101010;
       text-align: center;
@@ -88,6 +95,20 @@
     #deckcraft_loading .loading-title { color: #fff; font-size: 16px; font-weight: 650; }
     #deckcraft_loading .loading-hint { font-size: 12px; color: #737373; }
 
+    @media (max-width: 700px) {
+      #deckcraft_loading { gap: 12px; padding: 20px; font-size: 13px; }
+      .loading-mark { width: 48px; height: 48px; border-radius: 14px; font-size: 21px; }
+      #deckcraft_loading .loading-title { font-size: 15px; }
+      #deckcraft_loading .loading-hint { max-width: 28rem; font-size: 11px; }
+    }
+
+    @media (max-height: 420px) {
+      #deckcraft_loading { gap: 7px; padding-block: 10px; }
+      .loading-mark { width: 36px; height: 36px; border-radius: 10px; font-size: 17px; }
+      .loading-spinner { width: 18px; height: 18px; }
+      #deckcraft_loading .loading-hint { display: none; }
+    }
+
     @keyframes spin { to { transform: rotate(360deg); } }
 
     @media (prefers-reduced-motion: reduce) {
@@ -113,7 +134,7 @@
           message.textContent = "Ainda carregando. Em dispositivos mais lentos, isso pode levar alguns instantes.";
         }
       }, 12000);
-      window.addEventListener("error", (event) => {
+      window.addEventListener("error", () => {
         if (!message || !document.getElementById("deckcraft_loading")) return;
         if (Date.now() - startedAt > 3000) {
           message.textContent = "O editor encontrou um erro ao iniciar. Atualize a página; se persistir, tente um navegador atualizado com WebGPU ou WebGL2.";
