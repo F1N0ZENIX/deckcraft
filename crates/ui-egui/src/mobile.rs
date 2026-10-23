@@ -17,7 +17,7 @@ fn action(app: &mut SlideApp, id: &str) {
 }
 
 pub fn is_mobile(ctx: &egui::Context) -> bool {
-    ctx.screen_rect().width() < 720.0
+    ctx.input(|input| input.viewport_rect().width() < 720.0)
 }
 
 pub fn header(app: &mut SlideApp, ui: &mut egui::Ui) {
