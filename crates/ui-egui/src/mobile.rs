@@ -63,7 +63,7 @@ pub fn actions(app: &mut SlideApp, ui: &mut egui::Ui) {
     egui::Frame::NONE.fill(t.chrome).inner_margin(egui::Margin { left: 6, right: 6, top: 5, bottom: 5 }).show(ui, |ui| {
         egui::ScrollArea::horizontal().auto_shrink([false, true]).show(ui, |ui| {
             ui.horizontal(|ui| {
-                    if tool_button(ui, "＋\nSlide", "Adicionar slide") {
+                if tool_button(ui, "＋\nSlide", "Adicionar slide") {
                     action(app, "slide.new");
                 }
                 if tool_button(ui, "↶\nDesfazer", "Desfazer") {
