@@ -33,10 +33,9 @@ pub fn header(app: &mut SlideApp, ui: &mut egui::Ui) {
                 .add_sized([44.0, 44.0], egui::Button::new(egui::RichText::new(theme_label).size(21.0)).corner_radius(14.0))
                 .on_hover_text(if dark { "Ativar modo claro" } else { "Ativar modo escuro" })
                 .clicked()
+                && let Err(err) = app.run("view.dark", json!({"on": !dark}))
             {
-                if let Err(err) = app.run("view.dark", json!({"on": !dark})) {
-                    app.notify(err.to_string());
-                }
+                app.notify(err.to_string());
             }
             if ui
                 .add_sized([44.0, 44.0], egui::Button::new(egui::RichText::new("⌕").size(23.0)).corner_radius(14.0))
