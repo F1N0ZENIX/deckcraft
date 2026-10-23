@@ -22,13 +22,13 @@ pub fn header(app: &mut SlideApp, ui: &mut egui::Ui) {
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             let theme_label = if dark { "☀" } else { "☾" };
             if ui.add_sized([44.0, 44.0], egui::Button::new(egui::RichText::new(theme_label).size(21.0)).corner_radius(14.0)).on_hover_text(if dark { "Ativar modo claro" } else { "Ativar modo escuro" }).clicked() {
-                action(app, "view.dark");
+                if let Err(err) = app.run("view.dark", json!({"on": !dark})) { app.notify(err.to_string()); }
             }
             if ui.add_sized([44.0, 44.0], egui::Button::new(egui::RichText::new("⌕").size(23.0)).corner_radius(14.0)).on_hover_text("Pesquisar comandos").clicked() {
                 app.palette = Some((String::new(), 0));
             }
             if ui.add_sized([44.0, 44.0], egui::Button::new("⋯").corner_radius(14.0)).on_hover_text("Mais opções").clicked() {
-                app.backstage = Some(crate::backstage::Backstage::new(crate::backstage::Page::Home));
+                app.palette = Some((String::new(), 0));
             }
         });
     });
