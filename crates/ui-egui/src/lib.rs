@@ -18,6 +18,7 @@ pub mod fillui;
 pub mod icons;
 pub mod media;
 pub mod menus;
+pub mod mobile;
 pub mod notes;
 pub mod opening;
 pub mod panes;
@@ -1816,10 +1817,18 @@ impl SlideApp {
         self.sync_backstage();
         self.keyboard(&ctx);
         self.sync_backstage();
-        ribbon::title_bar(self, ui);
-        if self.backstage.is_none() && self.session.active().is_some() {
-            ribbon::show(self, ui);
-            status::status_bar(self, ui);
+        if mobile::is_mobile(&ctx) {
+            mobile::header(self, ui);
+            if self.backstage.is_none() && self.session.active().is_some() {
+                mobile::actions(self, ui);
+                ribbon::show(self, ui);
+            }
+        } else {
+            ribbon::title_bar(self, ui);
+            if self.backstage.is_none() && self.session.active().is_some() {
+                ribbon::show(self, ui);
+                status::status_bar(self, ui);
+            }
         }
         let now = ui.input(|i| i.time);
         if self.tick_anim_preview(now) {
