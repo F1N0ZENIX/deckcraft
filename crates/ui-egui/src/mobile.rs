@@ -92,19 +92,25 @@ pub fn actions(app: &mut SlideApp, ui: &mut egui::Ui) {
     });
     egui::ScrollArea::horizontal().auto_shrink([false, true]).show(ui, |ui| {
         ui.horizontal(|ui| {
-        for (label, tab) in [
-            ("Início", "Home"),
-            ("Inserir", "Insert"),
-            ("Design", "Design"),
-            ("Transições", "Transitions"),
-            ("Animações", "Animations"),
-            ("Organizar", "Arrange"),
-        ] {
-            let selected = app.ui.tab == tab;
-            if ui.add_sized([82.0, 42.0], egui::Button::new(egui::RichText::new(label).color(t.text)).selected(selected)).clicked() {
-                app.ui.tab = tab.to_string();
+            for (label, tab) in [
+                ("Início", "Home"),
+                ("Inserir", "Insert"),
+                ("Design", "Design"),
+                ("Transições", "Transitions"),
+                ("Animações", "Animations"),
+                ("Organizar", "Arrange"),
+            ] {
+                let selected = app.ui.tab == tab;
+                if ui
+                    .add_sized(
+                        [82.0, 42.0],
+                        egui::Button::new(egui::RichText::new(label).color(t.text)).selected(selected),
+                    )
+                    .clicked()
+                {
+                    app.ui.tab = tab.to_string();
+                }
             }
-        }
         });
     });
     ui.separator();
