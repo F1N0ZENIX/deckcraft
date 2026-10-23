@@ -101,13 +101,7 @@ pub fn actions(app: &mut SlideApp, ui: &mut egui::Ui) {
                 ("Organizar", "Arrange"),
             ] {
                 let selected = app.ui.tab == tab;
-                if ui
-                    .add_sized(
-                        [82.0, 42.0],
-                        egui::Button::new(egui::RichText::new(label).color(t.text)).selected(selected),
-                    )
-                    .clicked()
-                {
+                if ui.add_sized([82.0, 42.0], egui::Button::new(egui::RichText::new(label).color(t.text)).selected(selected)).clicked() {
                     app.ui.tab = tab.to_string();
                 }
             }
