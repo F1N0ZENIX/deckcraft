@@ -1,20 +1,125 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt-BR">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-  <title>DeckCraft</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101010">
+  <meta name="color-scheme" content="dark">
+  <meta name="description" content="DeckCraft Web+ — editor de apresentações open source no navegador.">
+  <title>DeckCraft Web+</title>
   <link data-trunk rel="rust" data-bin="deckcraft-web" data-wasm-opt="z" data-weak-refs />
   <link data-trunk rel="icon" href="../../assets/app-icon/hicolor/32x32/apps/ai.storyteller.deckcraft.png" />
   <style>
-    html, body { margin: 0; padding: 0; width: 100%; height: 100%; overflow: hidden; background: #262626; }
-    #deckcraft_canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; }
-    #deckcraft_loading { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
-      color: #b8b8b8; font: 14px system-ui, sans-serif; pointer-events: none; }
+    :root {
+      color-scheme: dark;
+      background: #101010;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      min-height: 100%;
+      overflow: hidden;
+      background: #101010;
+      overscroll-behavior: none;
+    }
+
+    body { min-height: 100dvh; }
+
+    #deckcraft_canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      display: block;
+      outline: none;
+      touch-action: manipulation;
+    }
+
+    #deckcraft_loading {
+      position: fixed;
+      z-index: 10;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      padding: 24px;
+      color: #f5f5f5;
+      background: #101010;
+      text-align: center;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .loading-mark {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      border: 1px solid #363636;
+      border-radius: 16px;
+      background: #181818;
+      color: #fff;
+      font-size: 23px;
+      font-weight: 750;
+      letter-spacing: -2px;
+    }
+
+    .loading-spinner {
+      width: 22px;
+      height: 22px;
+      border: 2px solid #3a3a3a;
+      border-top-color: #f5f5f5;
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    #deckcraft_loading p { margin: 0; max-width: 34rem; color: #a3a3a3; }
+    #deckcraft_loading .loading-title { color: #fff; font-size: 16px; font-weight: 650; }
+    #deckcraft_loading .loading-hint { font-size: 12px; color: #737373; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
+    }
   </style>
 </head>
 <body>
-  <canvas id="deckcraft_canvas"></canvas>
-  <div id="deckcraft_loading">Loading DeckCraft&hellip;</div>
+  <canvas id="deckcraft_canvas" aria-label="Editor de apresentações DeckCraft"></canvas>
+  <div id="deckcraft_loading" role="status" aria-live="polite">
+    <div class="loading-mark" aria-hidden="true">DC</div>
+    <div class="loading-spinner" aria-hidden="true"></div>
+    <div class="loading-title">Iniciando DeckCraft Web+</div>
+    <p id="deckcraft_loading_message">Preparando o editor e os recursos gráficos…</p>
+    <p class="loading-hint">A primeira abertura pode demorar um pouco enquanto o navegador prepara o WebAssembly.</p>
+  </div>
+  <script>
+    (() => {
+      const message = document.getElementById("deckcraft_loading_message");
+      const startedAt = Date.now();
+      window.setTimeout(() => {
+        if (document.getElementById("deckcraft_loading") && message) {
+          message.textContent = "Ainda carregando. Em dispositivos mais lentos, isso pode levar alguns instantes.";
+        }
+      }, 12000);
+      window.addEventListener("error", (event) => {
+        if (!message || !document.getElementById("deckcraft_loading")) return;
+        if (Date.now() - startedAt > 3000) {
+          message.textContent = "O editor encontrou um erro ao iniciar. Atualize a página; se persistir, tente um navegador atualizado com WebGPU ou WebGL2.";
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
