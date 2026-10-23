@@ -17,16 +17,16 @@ fn action(app: &mut SlideApp, id: &str) {
 }
 
 pub fn is_mobile(ctx: &egui::Context) -> bool {
-    ctx.input(|input| input.viewport_rect().width() < 720.0)
+    ctx.input(|input| input.viewport_rect().width() < 960.0 || input.viewport_rect().height() < 520.0)
 }
 
 pub fn header(app: &mut SlideApp, ui: &mut egui::Ui) {
     let dark = app.ui.brightness == theme::Brightness::Dark;
-    let t = theme::Tokens::get(ui.ctx());
+    let t = theme::Tokens::for_brightness(app.ui.brightness);
     ui.horizontal(|ui| {
         ui.add_space(4.0);
         ui.label(egui::RichText::new("DC").strong().size(20.0).color(t.accent));
-        ui.label(egui::RichText::new("DeckCraft").strong().size(16.0));
+        ui.label(egui::RichText::new("DeckCraft").strong().size(16.0).color(t.text));
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             let theme_label = if dark { "☀" } else { "☾" };
             if ui
@@ -90,7 +90,8 @@ pub fn actions(app: &mut SlideApp, ui: &mut egui::Ui) {
             });
         });
     });
-    ui.horizontal(|ui| {
+    egui::ScrollArea::horizontal().auto_shrink([false, true]).show(ui, |ui| {
+        ui.horizontal(|ui| {
         for (label, tab) in [
             ("Início", "Home"),
             ("Inserir", "Insert"),
@@ -100,10 +101,11 @@ pub fn actions(app: &mut SlideApp, ui: &mut egui::Ui) {
             ("Organizar", "Arrange"),
         ] {
             let selected = app.ui.tab == tab;
-            if ui.add_sized([78.0, 40.0], egui::Button::new(label).selected(selected)).clicked() {
+            if ui.add_sized([82.0, 42.0], egui::Button::new(egui::RichText::new(label).color(t.text)).selected(selected)).clicked() {
                 app.ui.tab = tab.to_string();
             }
         }
+        });
     });
     ui.separator();
 }
