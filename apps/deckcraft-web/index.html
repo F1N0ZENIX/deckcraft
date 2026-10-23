@@ -11,113 +11,47 @@
   <link data-trunk rel="rust" data-bin="deckcraft-web" data-wasm-opt="z" data-weak-refs />
   <link data-trunk rel="icon" href="../../assets/app-icon/hicolor/32x32/apps/ai.storyteller.deckcraft.png" />
   <style>
-    :root {
-      color-scheme: dark;
-      background: #101010;
-      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-      font-synthesis: none;
-      text-rendering: optimizeLegibility;
-      -webkit-text-size-adjust: 100%;
-      -webkit-tap-highlight-color: transparent;
-    }
-
+    :root { color-scheme: dark; background: #101010; font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; font-synthesis: none; text-rendering: optimizeLegibility; -webkit-text-size-adjust: 100%; -webkit-tap-highlight-color: transparent; }
     *, *::before, *::after { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      min-height: 100%;
-      overflow: hidden;
-      background: #101010;
-      overscroll-behavior: none;
-    }
-
+    html, body { margin: 0; padding: 0; width: 100%; height: 100%; min-height: 100%; overflow: hidden; background: #101010; overscroll-behavior: none; }
     body { min-height: 100vh; min-height: 100dvh; }
-
-    #deckcraft_canvas {
-      position: fixed;
-      top: env(safe-area-inset-top, 0px);
-      right: env(safe-area-inset-right, 0px);
-      bottom: env(safe-area-inset-bottom, 0px);
-      left: env(safe-area-inset-left, 0px);
-      width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px));
-      height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px));
-      display: block;
-      outline: none;
-      touch-action: none;
-      -webkit-user-select: none;
-      user-select: none;
-    }
-
-    #deckcraft_loading {
-      position: fixed;
-      z-index: 10;
-      inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 14px;
-      padding: max(24px, env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px));
-      color: #f5f5f5;
-      background: #101010;
-      text-align: center;
-      font-size: 14px;
-      line-height: 1.5;
-    }
-
-    .loading-mark {
-      display: grid;
-      place-items: center;
-      width: 54px;
-      height: 54px;
-      border: 1px solid #363636;
-      border-radius: 16px;
-      background: #181818;
-      color: #fff;
-      font-size: 23px;
-      font-weight: 750;
-      letter-spacing: -2px;
-    }
-
-    .loading-spinner {
-      width: 22px;
-      height: 22px;
-      border: 2px solid #3a3a3a;
-      border-top-color: #f5f5f5;
-      border-radius: 50%;
-      animation: spin .8s linear infinite;
-    }
-
+    #deckcraft_canvas { position: fixed; top: env(safe-area-inset-top, 0px); right: env(safe-area-inset-right, 0px); bottom: env(safe-area-inset-bottom, 0px); left: env(safe-area-inset-left, 0px); width: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); height: calc(100% - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); display: block; outline: none; touch-action: none; -webkit-user-select: none; user-select: none; }
+    #deckcraft_loading { position: fixed; z-index: 10; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; padding: max(24px, env(safe-area-inset-top, 0px)) max(24px, env(safe-area-inset-right, 0px)) max(24px, env(safe-area-inset-bottom, 0px)) max(24px, env(safe-area-inset-left, 0px)); color: #f5f5f5; background: #101010; text-align: center; font-size: 14px; line-height: 1.5; }
+    .loading-mark { display: grid; place-items: center; width: 54px; height: 54px; border: 1px solid #363636; border-radius: 16px; background: #181818; color: #fff; font-size: 23px; font-weight: 750; letter-spacing: -2px; }
+    .loading-spinner { width: 22px; height: 22px; border: 2px solid #3a3a3a; border-top-color: #f5f5f5; border-radius: 50%; animation: spin .8s linear infinite; }
     #deckcraft_loading p { margin: 0; max-width: 34rem; color: #a3a3a3; }
     #deckcraft_loading .loading-title { color: #fff; font-size: 16px; font-weight: 650; }
     #deckcraft_loading .loading-hint { font-size: 12px; color: #737373; }
-
+    #deckcraft_fullscreen {
+      position: fixed; z-index: 20; right: max(12px, env(safe-area-inset-right, 0px)); bottom: max(12px, env(safe-area-inset-bottom, 0px));
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px; min-width: 46px; min-height: 46px; padding: 0 14px;
+      border: 1px solid #424242; border-radius: 14px; background: rgba(24,24,24,.94); color: #f5f5f5;
+      box-shadow: 0 4px 20px rgba(0,0,0,.28); font: 600 13px/1 system-ui, sans-serif; cursor: pointer; touch-action: manipulation;
+      -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+    }
+    #deckcraft_fullscreen:focus-visible { outline: 2px solid #fff; outline-offset: 3px; }
+    #deckcraft_fullscreen svg { width: 18px; height: 18px; flex: none; }
+    #deckcraft_fullscreen[hidden] { display: none; }
     @media (max-width: 700px) {
       #deckcraft_loading { gap: 12px; padding: 20px; font-size: 13px; }
       .loading-mark { width: 48px; height: 48px; border-radius: 14px; font-size: 21px; }
       #deckcraft_loading .loading-title { font-size: 15px; }
       #deckcraft_loading .loading-hint { max-width: 28rem; font-size: 11px; }
+      #deckcraft_fullscreen { min-width: 48px; min-height: 48px; padding: 0 13px; }
     }
-
-    @media (max-height: 420px) {
-      #deckcraft_loading { gap: 7px; padding-block: 10px; }
-      .loading-mark { width: 36px; height: 36px; border-radius: 10px; font-size: 17px; }
-      .loading-spinner { width: 18px; height: 18px; }
-      #deckcraft_loading .loading-hint { display: none; }
-    }
-
+    @media (max-height: 420px) { #deckcraft_loading { gap: 7px; padding-block: 10px; } .loading-mark { width: 36px; height: 36px; border-radius: 10px; font-size: 17px; } .loading-spinner { width: 18px; height: 18px; } #deckcraft_loading .loading-hint { display: none; } }
+    @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; } }
     @keyframes spin { to { transform: rotate(360deg); } }
-
-    @media (prefers-reduced-motion: reduce) {
-      *, *::before, *::after { animation-duration: .01ms !important; animation-iteration-count: 1 !important; }
-    }
+    :fullscreen { background: #101010; }
+    :fullscreen #deckcraft_canvas { inset: 0; width: 100%; height: 100%; }
   </style>
 </head>
 <body>
   <canvas id="deckcraft_canvas" aria-label="Editor de apresentações DeckCraft"></canvas>
+  <button id="deckcraft_fullscreen" type="button" aria-label="Ativar tela cheia" title="Tela cheia">
+    <svg id="fullscreen_icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+    <span id="fullscreen_label">Tela cheia</span>
+  </button>
   <div id="deckcraft_loading" role="status" aria-live="polite">
     <div class="loading-mark" aria-hidden="true">DC</div>
     <div class="loading-spinner" aria-hidden="true"></div>
@@ -128,17 +62,51 @@
   <script>
     (() => {
       const message = document.getElementById("deckcraft_loading_message");
+      const button = document.getElementById("deckcraft_fullscreen");
+      const label = document.getElementById("fullscreen_label");
+      const icon = document.getElementById("fullscreen_icon");
+      const root = document.documentElement;
       const startedAt = Date.now();
-      window.setTimeout(() => {
-        if (document.getElementById("deckcraft_loading") && message) {
-          message.textContent = "Ainda carregando. Em dispositivos mais lentos, isso pode levar alguns instantes.";
+      const enterIcon = '<path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M21 16v3a2 2 0 0 1-2 2h-3M3 16v3a2 2 0 0 0 2 2h3"/>';
+      const exitIcon = '<path d="M9 3v6H3M15 3v6h6M3 15h6v6M21 15h-6v6"/>';
+      const isFullscreen = () => Boolean(document.fullscreenElement || document.webkitFullscreenElement);
+      const updateFullscreenButton = () => {
+        const active = isFullscreen();
+        if (label) label.textContent = active ? "Sair da tela cheia" : "Tela cheia";
+        if (button) {
+          button.setAttribute("aria-label", active ? "Sair da tela cheia" : "Ativar tela cheia");
+          button.title = active ? "Sair da tela cheia" : "Tela cheia";
         }
+        if (icon) icon.innerHTML = active ? exitIcon : enterIcon;
+      };
+      button?.addEventListener("click", async () => {
+        try {
+          if (isFullscreen()) {
+            if (document.exitFullscreen) await document.exitFullscreen();
+            else if (document.webkitExitFullscreen) document.webkitExitFullscreen();
+          } else {
+            if (root.requestFullscreen) await root.requestFullscreen();
+            else if (root.webkitRequestFullscreen) root.webkitRequestFullscreen();
+            else if (document.getElementById("deckcraft_canvas")?.webkitRequestFullscreen) document.getElementById("deckcraft_canvas").webkitRequestFullscreen();
+            else {
+              if (message) message.textContent = "Este navegador não permite tela cheia por botão. No celular, tente Adicionar à tela inicial.";
+              return;
+            }
+          }
+        } catch (_) {
+          if (message) message.textContent = "Não foi possível ativar a tela cheia neste navegador. Tente abrir o site diretamente no navegador, fora de um visualizador incorporado.";
+        }
+        updateFullscreenButton();
+      });
+      document.addEventListener("fullscreenchange", updateFullscreenButton);
+      document.addEventListener("webkitfullscreenchange", updateFullscreenButton);
+      updateFullscreenButton();
+      window.setTimeout(() => {
+        if (document.getElementById("deckcraft_loading") && message) message.textContent = "Ainda carregando. Em dispositivos mais lentos, isso pode levar alguns instantes.";
       }, 12000);
       window.addEventListener("error", () => {
         if (!message || !document.getElementById("deckcraft_loading")) return;
-        if (Date.now() - startedAt > 3000) {
-          message.textContent = "O editor encontrou um erro ao iniciar. Atualize a página; se persistir, tente um navegador atualizado com WebGPU ou WebGL2.";
-        }
+        if (Date.now() - startedAt > 3000) message.textContent = "O editor encontrou um erro ao iniciar. Atualize a página; se persistir, tente um navegador atualizado com WebGPU ou WebGL2.";
       });
     })();
   </script>
