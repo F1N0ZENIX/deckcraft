@@ -4,10 +4,7 @@ use serde_json::json;
 
 fn action(app: &mut SlideApp, id: &str) {
     let result = if id == "edit.delete" {
-        app.session
-            .key("Delete", deckcraft_engine::Mods { shift: false, alt: false, cmd: false })
-            .map(|_| serde_json::Value::Null)
-            .map_err(|err| err.to_string())
+        app.session.key("Delete", deckcraft_engine::Mods { shift: false, alt: false, cmd: false }).map(|_| serde_json::Value::Null).map_err(|err| err.to_string())
     } else {
         app.run(id, json!({}))
     };
@@ -29,19 +26,13 @@ pub fn header(app: &mut SlideApp, ui: &mut egui::Ui) {
         ui.label(egui::RichText::new("DeckCraft").strong().size(16.0));
         ui.with_layout(egui::Layout::right_to_left(egui::Align::Center), |ui| {
             let theme_label = if dark { "☀" } else { "☾" };
-            if ui
-                .add_sized([44.0, 44.0], egui::Button::new(egui::RichText::new(theme_label).size(21.0)).corner_radius(14.0))
-                .on_hover_text(if dark { "Ativar modo claro" } else { "Ativar modo escuro" })
-                .clicked()
+            if ui.add_sized([44.0, 44.0], egui::Button::new(egui::RichText::new(theme_label).size(21.0)).corner_radius(14.0)).on_hover_text(if dark { "Ativar modo claro" } else { "Ativar modo escuro" }).clicked()
             {
                 if let Err(err) = app.run("view.dark", json!({"on": !dark})) {
                     app.notify(err.to_string());
                 }
             }
-            if ui
-                .add_sized([44.0, 44.0], egui::Button::new(egui::RichText::new("⌕").size(23.0)).corner_radius(14.0))
-                .on_hover_text("Pesquisar comandos")
-                .clicked()
+            if ui.add_sized([44.0, 44.0], egui::Button::new(egui::RichText::new("⌕").size(23.0)).corner_radius(14.0)).on_hover_text("Pesquisar comandos").clicked()
             {
                 app.palette = Some((String::new(), 0));
             }
@@ -55,19 +46,14 @@ pub fn header(app: &mut SlideApp, ui: &mut egui::Ui) {
 }
 
 fn tool_button(ui: &mut egui::Ui, label: &str, hint: &str) -> bool {
-    ui.add_sized([66.0, 54.0], egui::Button::new(egui::RichText::new(label).size(13.0)).corner_radius(13.0))
-        .on_hover_text(hint)
-        .clicked()
+    ui.add_sized([66.0, 54.0], egui::Button::new(egui::RichText::new(label).size(13.0)).corner_radius(13.0)).on_hover_text(hint).clicked()
 }
 
 pub fn actions(app: &mut SlideApp, ui: &mut egui::Ui) {
     let t = theme::Tokens::get(ui.ctx());
-    egui::Frame::NONE
-        .fill(t.chrome)
-        .inner_margin(egui::Margin { left: 6, right: 6, top: 5, bottom: 5 })
-        .show(ui, |ui| {
-            egui::ScrollArea::horizontal().auto_shrink([false, true]).show(ui, |ui| {
-                ui.horizontal(|ui| {
+    egui::Frame::NONE.fill(t.chrome).inner_margin(egui::Margin { left: 6, right: 6, top: 5, bottom: 5 }).show(ui, |ui| {
+        egui::ScrollArea::horizontal().auto_shrink([false, true]).show(ui, |ui| {
+            ui.horizontal(|ui| {
                     if tool_button(ui, "＋\nSlide", "Adicionar slide") {
                         action(app, "slide.new");
                     }
@@ -93,9 +79,9 @@ pub fn actions(app: &mut SlideApp, ui: &mut egui::Ui) {
                         let from = app.session.active().map(|d| d.selection.slide).unwrap_or(0);
                         app.start_show(from, false);
                     }
-                });
             });
         });
+    });
     ui.horizontal(|ui| {
         for (label, tab) in [
             ("Início", "Home"),
